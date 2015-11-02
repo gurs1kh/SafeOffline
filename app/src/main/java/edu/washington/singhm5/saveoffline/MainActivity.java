@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSignInOut() {
-        if(SaveSharedPreference.getUserName(MainActivity.this).length() == 0) {
+        if(SaveSharedPreference.getUserName(this).length() == 0) {
             signInOutMI.setTitle(getString(R.string.action_sign_in_short));
         } else {
             signInOutMI.setTitle(getString(R.string.action_sign_out));
@@ -51,11 +52,13 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_sign_in_out) {
-            if(SaveSharedPreference.getUserName(MainActivity.this).length() == 0) {
+            if(SaveSharedPreference.getUserName(this).length() == 0) {
                 startActivity(new Intent(this, LoginActivity.class));
             } else {
-                SaveSharedPreference.clearUserName(MainActivity.this);
+                String email = SaveSharedPreference.getUserName(this);
+                SaveSharedPreference.clearUserName(this);
                 item.setTitle(getString(R.string.action_sign_in_short));
+                Toast.makeText(this, email + " signed out", Toast.LENGTH_SHORT).show();
             }
         }
 
