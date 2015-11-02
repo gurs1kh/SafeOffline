@@ -4,9 +4,9 @@
 	error_reporting(E_ALL);
 
 	// Connect to the Database
-	$dsn = 'mysql:host=cssgate.insttech.washington.edu;dbname=yourid';
-    	$username = 'yourid';
-    	$password = 'yourpasswd';
+	$dsn = 'mysql:host=cssgate.insttech.washington.edu;dbname=singhm5';
+    	$username = 'singhm5';
+    	$password = 'uphbyu';
 
     	try {
         	$conn = new PDO($dsn, $username, $password);

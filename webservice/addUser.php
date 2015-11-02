@@ -14,11 +14,13 @@
             } else {    
 
                 //build query
-                $sql = "INSERT INTO User";
+                $sql = "INSERT INTO Users (email, password)";
                 $sql .= " VALUES ('$email', '$password')";
-             
+				
+				
+				$q = $conn->prepare($sql);
                 //attempts to add record
-                if ($db->query($sql)) {
+                if ($q->execute()) {
                     echo '{"result": "success"}';
                     $db = null;
                 } 

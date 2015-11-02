@@ -20,7 +20,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo '{"result": "fail", "error": "Please enter a valid password (longer than five characters)."}';
 } else {    
     //build query
-    $sql = "SELECT uid, password FROM users ";
+    $sql = "SELECT uid, password FROM Users ";
     $sql .= " WHERE email = '" . $email . "'";
 
         
@@ -32,10 +32,10 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     //check results
     if ($result != false) {
         //on success, return the user id
-        if (password_verify($password, $result['password']))
+        if (strcmp($password, $result['password']) == 0)
         	echo '{"result": "success", "userid": "' . $result['uid'] . '"}';
-	else 
-		echo '{"result": "fail", "error": "Incorrect password."}';
+		else 
+			echo '{"result": "fail", "error": "Incorrect password."}';
     } else {
         echo '{"result": "fail", "error": "Incorrect email."}';
     }
