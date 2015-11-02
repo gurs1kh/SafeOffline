@@ -55,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
             if(SaveSharedPreference.getUserName(this).length() == 0) {
                 startActivity(new Intent(this, LoginActivity.class));
             } else {
-                String email = SaveSharedPreference.getUserName(this);
-                SaveSharedPreference.clearUserName(this);
                 item.setTitle(getString(R.string.action_sign_in_short));
-                Toast.makeText(this, email + " signed out", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, SaveSharedPreference.getUserName(this) + " signed out",
+                               Toast.LENGTH_SHORT).show();
+                SaveSharedPreference.clearUserName(this);
             }
         }
 
