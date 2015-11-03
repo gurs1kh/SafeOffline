@@ -4,10 +4,10 @@
 */
 	require_once('dbconn.php');
 
-	$email = isset($_GET['email']) ? $_GET['email'] : '';
+	$id = isset($_GET['id']) ? $_GET['id'] : '';
 
-	$sql = "SELECT * FROM savedPage ";
-    $sql .= " WHERE owner = '" . $email . "'";
+	$sql = "SELECT * FROM SavedPages ";
+    $sql .= " WHERE owner = '" . $id . "'";
 
         
     $q = $conn->prepare($sql);

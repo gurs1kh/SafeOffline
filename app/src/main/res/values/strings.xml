@@ -13,6 +13,11 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">Contacts permissions are needed for providing email completions.</string>
     <string name="action_sign_out">Sign Out</string>
+    <string name="add_url">Add URL</string>
 
     <string name="title_activity_url_list">UrlListActivity</string>
+    <string name="title_activity_add_url">addUrlActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>

@@ -4,11 +4,11 @@
 */
 	require_once('dbconn.php');
 
-	$email = isset($_GET['email']) ? $_GET['email'] : '';
+	$id = isset($_GET['id']) ? $_GET['id'] : '';
     $url = isset($_GET['url']) ? $_GET['url'] : '';
-
-	$sql = "DELETE FROM savedPage ";
-    $sql .= " WHERE owner = '" . $email . "' AND url = '" . $url . "'";
+	
+	$sql = "DELETE FROM SavedPages ";
+    $sql .= " WHERE owner = '" . $id . "' AND url = '" . $url . "'";
 
         
     $q = $conn->prepare($sql);
