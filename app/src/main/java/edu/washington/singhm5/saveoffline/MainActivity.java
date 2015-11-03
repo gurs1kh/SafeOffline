@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 item.setTitle(getString(R.string.action_sign_in_short));
                 Toast.makeText(this, SaveSharedPreference.getUserName(this) + " signed out",
                                Toast.LENGTH_SHORT).show();
-                SaveSharedPreference.clearUserName(this);
+                SaveSharedPreference.clearUser(this);
             }
         }
 

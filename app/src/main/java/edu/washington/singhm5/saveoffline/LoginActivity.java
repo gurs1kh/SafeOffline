@@ -29,6 +29,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +56,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    private static final String mUrl = "http://cssgate.insttech.washington.edu/~singhm5/saveoffline/login.php";
+    private static final String mLoginUrl = "http://cssgate.insttech.washington.edu/~singhm5/saveoffline/login.php";
+    private static final String mAddUrl = "http://cssgate.insttech.washington.edu/~singhm5/saveoffline/addUser.php";
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -295,7 +300,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, String> {
 
         private static final String TAG = "UserLoginTask";
 
@@ -308,14 +313,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected String doInBackground(Void... params) {
             InputStream is = null;
             // Only display the first 500 characters of the retrieved
             // web page content.
             int len = 500;
 
             try {
-                URL url = new URL(mUrl + "?email=" + mEmail + "&password=" + mPassword);
+                URL url = new URL(mLoginUrl + "?email=" + mEmail + "&password=" + mPassword);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setReadTimeout(10000 /* milliseconds */);
                 conn.setConnectTimeout(15000 /* milliseconds */);
@@ -330,7 +335,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Convert the InputStream into a string
                 String contentAsString = readIt(is, len);
                 Log.d(TAG, "The string is: " + contentAsString);
-                return contentAsString.contains("success");
+                if (contentAsString.contains("success") || contentAsString.contains("Incorrect password")) {
+                    return contentAsString;
+                }
 
                 // Makes sure that the InputStream is closed after the app is
                 // finished using it.
@@ -345,7 +352,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                 }
             }
-            return null;
+
+            try {
+                URL url = new URL(mAddUrl + "?email=" + mEmail + "&password=" + mPassword);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(10000 /* milliseconds */);
+                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
+                // Starts the query
+                conn.connect();
+                int response = conn.getResponseCode();
+                Log.d(TAG, "The response is: " + response);
+                is = conn.getInputStream();
+
+                // Convert the InputStream into a string
+                String contentAsString = readIt(is, len);
+                Log.d(TAG, "The string is: " + contentAsString);
+                return contentAsString;
+
+                // Makes sure that the InputStream is closed after the app is
+                // finished using it.
+            } catch(Exception e ) {
+                Log.d(TAG, "Something happened" + e.getMessage());
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return "";
         }
 
         // Reads an InputStream and converts it to a String.
@@ -358,17 +397,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final String json) {
             mAuthTask = null;
             showProgress(false);
-
-            if (success) {
-                SaveSharedPreference.setUserName(LoginActivity.this, mEmail);
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(json);
+                if (jsonObject.getString("result").equalsIgnoreCase("success")) {
+                    SaveSharedPreference.setUserName(LoginActivity.this, mEmail);
+                    SaveSharedPreference.setUserId(LoginActivity.this, jsonObject.getString("userid"));
+                    finish();
+                } else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+
         }
 
         @Override

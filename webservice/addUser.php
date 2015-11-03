@@ -21,7 +21,13 @@
 				$q = $conn->prepare($sql);
                 //attempts to add record
                 if ($q->execute()) {
-                    echo '{"result": "success"}';
+					$sql = "SELECT uid FROM Users ";
+					$sql .= " WHERE email = '" . $email . "'";
+					
+					$q = $conn->prepare($sql);
+					$q->execute();
+					$result = $q->fetch(PDO::FETCH_ASSOC);
+					echo '{"result": "success", "userid": "' . $result['uid'] . '"}';
                     $db = null;
                 } 
             }   

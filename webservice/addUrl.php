@@ -6,7 +6,7 @@
             $id = isset($_GET['id']) ? $_GET['id'] : '';
             $title = isset($_GET['title']) ? $_GET['title'] : '';
             $url = isset($_GET['url']) ? $_GET['url'] : '';
-			
+
 			//build query
 			$sql = "INSERT INTO SavedPages (owner, title, url)";
 			$sql .= " VALUES ('$id', '$title', '$url')";
