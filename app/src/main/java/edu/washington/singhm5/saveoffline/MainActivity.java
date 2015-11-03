@@ -55,12 +55,6 @@ public class MainActivity extends AppCompatActivity {
             public void onRefresh() {
                 updateUrlList();
                 swipeLayout.setRefreshing(false);
-                /*new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeLayout.setRefreshing(false);
-                    }
-                }, 5000);*/
             }
         });
     }
