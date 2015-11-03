@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSignInOut() {
-        if(SaveSharedPreference.getUserName(this).length() == 0) {
+        if(SaveSharedPreference.getUserName(this).equals("")) {
             signInOutMI.setTitle(getString(R.string.action_sign_in_short));
         } else {
             signInOutMI.setTitle(getString(R.string.action_sign_out));
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_sign_in_out) {
-            if(SaveSharedPreference.getUserName(this).length() == 0) {
+            if(SaveSharedPreference.getUserName(this).equals("")) {
                 startActivity(new Intent(this, LoginActivity.class));
             } else {
                 item.setTitle(getString(R.string.action_sign_in_short));
@@ -63,5 +63,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addURL(){
+        //SQLiteDatabse mydatabase = openOrCreateDatabase("your database name",MODE_PRIVATE,null);
     }
 }
