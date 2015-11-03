@@ -18,7 +18,7 @@
     //check results
     if ($result != false) {
         //on success, echo  the json
-        $json = json_encode($results);
+        $json = json_encode($result);
         echo $json;
     } else {
         echo '{"result": "fail", "error": "No registered user"}';
