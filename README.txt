@@ -20,6 +20,8 @@ Login/Create New User/Use Offline:
 	User: team1@example.com
 	Password: Password1!
 
+	Login page currently doubles as registration page
+
 Insert Link:
 	User save a URL witha custom title. Currently will only save the URL inside their database, Insert Link will only save the information and will not actually download the page for now.
 
