@@ -1,15 +1,14 @@
 package edu.washington.singhm5.saveoffline;
 
-import android.content.Intent;
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,14 +18,16 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class AddUrlActivity extends AppCompatActivity {
+public class addUrlActivity extends AppCompatActivity {
 
     private String url = "http://cssgate.insttech.washington.edu/~singhm5/saveoffline/addUrl.php";
+    private Url mUrlDB;
 
     private EditText mTitleInput;
     private EditText mUrlInput;
@@ -67,7 +68,7 @@ public class AddUrlActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (mTitleInput.getText().length() != 0 && mUrlInput.getText().length() != 0) {
-                    url += "?id=" + SaveSharedPreference.getUserId(AddUrlActivity.this)
+                    url += "?id=" + SaveSharedPreference.getUserId(addUrlActivity.this)
                             + "&title=" + mTitleInput.getText().toString()
                             + "&url=" +mUrlInput.getText().toString();
                     new  AddUserWebTask().execute(url);
@@ -76,6 +77,42 @@ public class AddUrlActivity extends AppCompatActivity {
         });
     }
 
+    private boolean validateAndStore() {
+        Activity activity = addUrlActivity.this;
+        EditText title = (EditText) activity.findViewById(R.id.title_input);
+        if(title.getText().length() == 0) {
+            Toast.makeText(activity, "Please enter title", Toast.LENGTH_LONG).show();
+            title.requestFocus();
+            return false;
+        }
+
+        EditText url = (EditText) activity.findViewById(R.id.url_input);
+        if(title.getText().length() == 0) {
+            Toast.makeText(activity, "Please enter url", Toast.LENGTH_LONG).show();
+            url.requestFocus();
+            return false;
+        }
+
+        //store to file
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
+                    activity.openFileOutput(getString(R.string.add_url), Context.MODE_PRIVATE));
+            outputStreamWriter.write("title=" + title.getText().toString() + ";");
+            outputStreamWriter.write("url=" + url.getText().toString() + ";");
+            outputStreamWriter.close();
+            Toast.makeText(activity, "Stored in File successfully", Toast.LENGTH_LONG).show();
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        mUrlDB = new Url(activity);
+        if(mUrlDB.inserUrl(title.getText().toString(), url.getText().toString())) {
+            Toast.makeText(activity, "Added URL to Local Database", Toast.LENGTH_LONG).show();
+        }
+
+        return true;
+    }
 
     private class AddUserWebTask extends AsyncTask<String, Void, String> {
 
@@ -148,11 +185,11 @@ public class AddUrlActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(s);
                 String status = jsonObject.getString("result");
                 if (status.equalsIgnoreCase("success")) {
-                    Toast.makeText(AddUrlActivity.this, "User successfully inserted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(addUrlActivity.this, "User successfully inserted", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
                     String reason = jsonObject.getString("error");
-                    Toast.makeText(AddUrlActivity.this, "Failed :" + reason, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(addUrlActivity.this, "Failed :" + reason, Toast.LENGTH_SHORT).show();
                 }
 
                 getFragmentManager().popBackStackImmediate();

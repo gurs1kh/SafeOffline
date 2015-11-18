@@ -27,7 +27,7 @@
             android:label="@string/title_activity_login" >
         </activity>
         <activity
-            android:name=".AddUrlActivity"
+            android:name=".addUrlActivity"
             android:label="@string/title_activity_add_url" >
         </activity>
     </application>

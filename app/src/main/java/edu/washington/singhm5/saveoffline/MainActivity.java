@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -124,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addUrlActivity(View view) {
-        startActivity(new Intent(MainActivity.this, AddUrlActivity.class));
+        startActivity(new Intent(MainActivity.this, addUrlActivity.class));
     }
 
     private class UserWebTask extends AsyncTask<String, Void, String> {
