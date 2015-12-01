@@ -29,6 +29,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import edu.washington.singhm5.saveoffline.Model.Url;
+
+/*
+* resource: https://github.com/jonndavis1993/Android-Tutorials/blob/master/app/src/main/java/com/simpleware/jonathan/listviewexample/MainActivity.java
+ */
 public class MainActivity extends AppCompatActivity {
 
     MenuItem signInOutMI;
@@ -76,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         updateUrlList();
     }
 
+    //TODO: add delete button to url.
     private void updateUrlList() {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -89,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.url_list);
         mList = Url.ITEMS;
         mAdapter = new ArrayAdapter<Url.UrlInfo>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, mList);
+                R.layout.list_item, android.R.id.text1, mList);
+        mListView.setAdapter(mAdapter);
     }
 
     private void updateSignInOut() {
@@ -178,6 +185,42 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             return null;
+        }
+
+        //TODO: delete urls from database.
+        private void deleteUrl(String myurl) throws IOException {
+            InputStream is = null;
+            // Only display the first 500 characters of the retrieved
+            // web page content.
+            int len = 500;
+
+            try {
+                URL url = new URL(myurl + "?id=" + SaveSharedPreference.getUserId(MainActivity.this));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(10000 /* milliseconds */);
+                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setRequestMethod("POST");
+                conn.setDoInput(true);
+                // Starts the query
+                conn.connect();
+                int response = conn.getResponseCode();
+                Log.d(TAG, "The response is: " + response);
+                is = conn.getInputStream();
+
+                // Convert the InputStream into a string
+                String contentAsString = readIt(is, len);
+                Log.d(TAG, "The string is: " + contentAsString);
+
+                // Makes sure that the InputStream is closed after the app is
+                // finished using it.
+            } catch(Exception e ) {
+                Log.d(TAG, "Something happened" + e.getMessage());
+            }
+            finally {
+                if (is != null) {
+                    is.close();
+                }
+            }
         }
 
         // Reads an InputStream and converts it to a String.

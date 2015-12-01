@@ -1,4 +1,4 @@
-package edu.washington.singhm5.saveoffline;
+package edu.washington.singhm5.saveoffline.Model;
 
 import android.content.ContentValues;
 import android.content.Context;

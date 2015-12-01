@@ -24,6 +24,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import edu.washington.singhm5.saveoffline.Model.Url;
+
 public class addUrlActivity extends AppCompatActivity {
 
     private String url = "http://cssgate.insttech.washington.edu/~singhm5/saveoffline/addUrl.php";
@@ -72,6 +74,8 @@ public class addUrlActivity extends AppCompatActivity {
                             + "&title=" + mTitleInput.getText().toString()
                             + "&url=" +mUrlInput.getText().toString();
                     new  AddUserWebTask().execute(url);
+
+                    //TODO: Create URL locally after creation.
                 }
             }
         });
