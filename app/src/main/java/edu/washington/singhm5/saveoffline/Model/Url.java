@@ -2,6 +2,7 @@ package edu.washington.singhm5.saveoffline.Model;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteTransactionListener;
@@ -54,6 +55,26 @@ public class Url {
 
         long rowId = mSQLiteDatabase.insert("SavedPages", null, contentValues);
         return rowId != -1;
+    }
+
+    public List<UrlInfo> getAllUrl() {
+        Cursor c = mSQLiteDatabase.query("SavedPages", null, null, null,
+                                        null, null, null);
+        if(c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            do {
+                //Push URL to array
+                UrlInfo temp = new UrlInfo(c.getString(c.getColumnIndex("title")),
+                                            c.getString(c.getColumnIndex("url")));
+                ITEMS.add(temp);
+            } while (c.moveToNext());
+        }
+        return ITEMS;
+    }
+
+    public boolean deleteUrl() {
+
+        return true;
     }
 
     public void closeDB() {

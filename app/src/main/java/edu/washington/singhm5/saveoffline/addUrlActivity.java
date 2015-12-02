@@ -69,13 +69,11 @@ public class addUrlActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mTitleInput.getText().length() != 0 && mUrlInput.getText().length() != 0) {
+                if (validateAndStore()) {
                     url += "?id=" + SaveSharedPreference.getUserId(addUrlActivity.this)
                             + "&title=" + mTitleInput.getText().toString()
                             + "&url=" +mUrlInput.getText().toString();
                     new  AddUserWebTask().execute(url);
-
-                    //TODO: Create URL locally after creation.
                 }
             }
         });
@@ -110,6 +108,7 @@ public class addUrlActivity extends AppCompatActivity {
             return false;
         }
 
+        //Store Locally
         mUrlDB = new Url(activity);
         if(mUrlDB.inserUrl(title.getText().toString(), url.getText().toString())) {
             Toast.makeText(activity, "Added URL to Local Database", Toast.LENGTH_LONG).show();

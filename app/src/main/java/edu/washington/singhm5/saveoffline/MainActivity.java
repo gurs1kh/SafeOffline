@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         updateUrlList();
     }
 
-    //TODO: add delete button to url.
+    //TODO: add delete button to url. Change to Load from local DB instead
     private void updateUrlList() {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
         mListView = (ListView) findViewById(R.id.url_list);
         mList = Url.ITEMS;
-        mAdapter = new ArrayAdapter<Url.UrlInfo>(this,
+        mAdapter = new ArrayAdapter<>(this,
                 R.layout.list_item, android.R.id.text1, mList);
         mListView.setAdapter(mAdapter);
     }
