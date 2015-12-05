@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView mListView;
     private ArrayAdapter<Url.UrlInfo> mAdapter;
     private SwipeRefreshLayout swipeLayout;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
         mListView = (ListView) findViewById(R.id.url_list);
         mList = Url.ITEMS;
+        Log.d(TAG, "Current list" + mList.toString() );
+        //Log here, this should be where we sycn creating new and downloading from database
         mAdapter = new ArrayAdapter<>(this,
                 R.layout.list_item, android.R.id.text1, mList);
         mListView.setAdapter(mAdapter);
@@ -246,7 +249,8 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = (JSONObject) jsonarray.get(i);
                     String title = (String) jsonObject.get("title");
                     String url = (String) jsonObject.get("url");
-                    Url.ITEMS.add(new Url.UrlInfo(title, url));
+                    int mod_time = (Integer) jsonObject.get("mod_date");
+                    Url.ITEMS.add(new Url.UrlInfo(title, url, mod_time));
 
                 }
                 mList = Url.ITEMS;

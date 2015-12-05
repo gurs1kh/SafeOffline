@@ -65,16 +65,16 @@ public class Url {
             do {
                 //Push URL to array
                 UrlInfo temp = new UrlInfo(c.getString(c.getColumnIndex("title")),
-                                            c.getString(c.getColumnIndex("url")));
+                                            c.getString(c.getColumnIndex("url")),
+                                            c.getInt(c.getColumnIndex("modified_date")));
                 ITEMS.add(temp);
             } while (c.moveToNext());
         }
         return ITEMS;
     }
 
-    public boolean deleteUrl() {
-
-        return true;
+    public void deleteUrl(String url) {
+        mSQLiteDatabase.delete("SavedPages", "url = ?", new String[] {url});
     }
 
     public void closeDB() {
@@ -84,12 +84,28 @@ public class Url {
      * A dummy item representing a piece of content.
      */
     public static class UrlInfo {
-        public String title;
-        public String url;
+        private String title;
+        private String url;
+        private int mod_date;
+        private boolean delete;
 
-        public UrlInfo(String title, String url) {
+        public UrlInfo(String title, String url, int mod_date) {
             this.title = title;
             this.url = url;
+            this.mod_date = mod_date;
+            this.delete = false;
+        }
+
+        public void softDelete() {
+            this.delete = true;
+        }
+
+        public int getModDate() {
+            return this.mod_date;
+        }
+
+        public boolean deleteStatus() {
+            return this.delete;
         }
 
         @Override
@@ -100,12 +116,12 @@ public class Url {
 
     class UrlDBHelper extends SQLiteOpenHelper {
         private static final String CREATE_URL_SQL =
-                "CREATE TABLE IF NOT EXIST SavedPages(" +
-                        "id INT(6)  UNSIGNED AUTO_INCREMENT PRIMARY KEY," +
-                        "title VARCHAR(30) NOT NULL," +
+                "CREATE TABLE IF NOT EXISTS SavedPages(" +
+                        "id INT AUTO_INCREMENT," +
+                        "title TEXT NOT NULL," +
                         "url TEXT NO NULL," +
-                        "modified_date INT" + //Since ContentValue cannot do timestamp
-                        "delete BOOLEAN" +
+                        "modified_date INT," + //Since ContentValue cannot do timestamp
+                        "is_deleted INT" +
                         ")";
 
         private static final String DROP_URL_SQL =
