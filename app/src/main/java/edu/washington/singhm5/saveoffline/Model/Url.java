@@ -46,7 +46,7 @@ public class Url {
         ITEM_MAP.put(item.title, item);
     }
 
-    public boolean inserUrl(String title, String url) {
+    public boolean insertUrl(String title, String url) {
         ContentValues contentValues = new ContentValues();
         Date date = new Date();
         contentValues.put("title", title);
