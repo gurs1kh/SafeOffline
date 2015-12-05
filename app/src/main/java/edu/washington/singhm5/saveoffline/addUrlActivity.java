@@ -110,7 +110,7 @@ public class addUrlActivity extends AppCompatActivity {
 
         //Store Locally
         mUrlDB = new Url(activity);
-        if(mUrlDB.inserUrl(title.getText().toString(), url.getText().toString())) {
+        if(mUrlDB.insertUrl(title.getText().toString(), url.getText().toString())) {
             Toast.makeText(activity, "Added URL to Local Database", Toast.LENGTH_LONG).show();
         }
 
@@ -172,9 +172,8 @@ public class addUrlActivity extends AppCompatActivity {
         }
 
         // Reads an InputStream and converts it to a String.
-        public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-            Reader reader = null;
-            reader = new InputStreamReader(stream, "UTF-8");
+        public String readIt(InputStream stream, int len) throws IOException {
+            Reader reader = new InputStreamReader(stream, "UTF-8");
             char[] buffer = new char[len];
             reader.read(buffer);
             return new String(buffer);
