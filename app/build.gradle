@@ -3,9 +3,9 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
-            keyAlias 'SaveOffilne'
+            keyAlias 'saveOfflineV2'
             keyPassword 'Password1!'
-            storeFile file('C:/Users/Nabil/saveoffline.jks')
+            storeFile file('C:/Users/Nabil/saveofflineV2.jks')
             storePassword 'Password1!'
         }
     }
