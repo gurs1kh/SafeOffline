@@ -41,7 +41,11 @@ public class Url {
         mSQLiteDatabase = mUrlDBHelper.getWritableDatabase();
     }
 
-    private static void addItem(UrlInfo item) {
+    public List<UrlInfo> getUrls() {
+        return ITEMS;
+    }
+
+    public static void addItem(UrlInfo item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.title, item);
     }
