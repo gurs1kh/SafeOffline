@@ -92,14 +92,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No network connection available.", Toast.LENGTH_SHORT).show();
         }
-
-        mListView = (ListView) findViewById(R.id.url_list);
-        mList = Url.ITEMS;
-        Log.d(TAG, "Current list" + mList.toString() );
-        //Log here, this should be where we sycn creating new and downloading from database
-        mAdapter = new ArrayAdapter<>(this,
-                R.layout.list_item, android.R.id.text1, mList);
-        mListView.setAdapter(mAdapter);
     }
 
     private void updateSignInOut() {
@@ -238,11 +230,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            Log.d(TAG, "running onPostExecute");
 
             // Parse JSON
             try {
                 mList.clear();
-                Url.ITEMS.clear();
+                Url.ITEMS.clear(); //Null object refrence.
 
                 JSONArray jsonarray = new JSONArray(s);
                 for (int i=0; i<jsonarray.length(); i++) {
@@ -253,8 +246,11 @@ public class MainActivity extends AppCompatActivity {
                     Url.ITEMS.add(new Url.UrlInfo(title, url, mod_time));
 
                 }
+
+                mListView = (ListView) findViewById(R.id.url_list);
                 mList = Url.ITEMS;
-                mListView.setAdapter(mAdapter);
+                Log.d(TAG, "Current list" + mList.toString());
+                //Log here, this should be where we sycn creating new and downloading from database
             }
             catch(Exception e) {
                 Log.d(TAG, "Parsing JSON Exception " + e.getMessage());

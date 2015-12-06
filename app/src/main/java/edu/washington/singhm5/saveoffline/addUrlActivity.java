@@ -2,6 +2,7 @@ package edu.washington.singhm5.saveoffline;
 
 import android.app.Activity;
 import android.content.Context;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import edu.washington.singhm5.saveoffline.Model.Url;
 
 public class addUrlActivity extends AppCompatActivity {
 
+    private static final String TAG = "URL class";
     private String url = "http://cssgate.insttech.washington.edu/~singhm5/saveoffline/addUrl.php";
     private Url mUrlDB;
 
@@ -112,6 +114,7 @@ public class addUrlActivity extends AppCompatActivity {
         //Store Locally
         mUrlDB = new Url(activity);
         if(mUrlDB.insertUrl(title.getText().toString(), url.getText().toString())) {
+            Log.d(TAG, "Url created" + mUrlDB.toString());
             Toast.makeText(activity, "Added URL to Local Database", Toast.LENGTH_LONG).show();
         }
 
