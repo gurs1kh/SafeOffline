@@ -240,35 +240,49 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             Log.d(TAG, "running onPostExecute");
+
             Activity activity = MainActivity.this;
             mUrl = new Url(activity);
             mList = new ArrayList<>();
 
             // Parse JSON
             try {
+                List<Url.UrlInfo> remoteList = new ArrayList<>();
+                List<Url.UrlInfo> localList;
+
                 mList.clear();
-                mUrl.getAllUrl();
+                localList = mUrl.getAllUrl();
 
                 JSONArray jsonarray = new JSONArray(s);
-                Log.d(TAG, "Json string:" + jsonarray.toString());
+//                Log.d(TAG, "Json string:" + jsonarray.toString());
                 //TODO: DELETE comparison
 
-//                for (int i=0; i<jsonarray.length(); i++) {
-//                    JSONObject jsonObject = (JSONObject) jsonarray.get(i);
-//                    String title = (String) jsonObject.get("title");
-//                    String url = (String) jsonObject.get("url");
-//                    int mod_time = (Integer) jsonObject.get("mod_date");
-//                    mUrl.addItem(new Url.UrlInfo(title, url, mod_time));
-//
-//                }
+                for (int i=0; i<jsonarray.length(); i++) {
+                    JSONObject jsonObject = (JSONObject) jsonarray.get(i);
+                    String title = (String) jsonObject.get("title");
+                    String url = (String) jsonObject.get("url");
+                    int reg_date = (Integer) jsonObject.get("reg_date");
+                    remoteList.add(new Url.UrlInfo(title, url, reg_date));
+                }
 
                 mListView = (ListView) findViewById(R.id.url_list);
-//                mList = mUrl.ITEMS;
                 Log.d(TAG, "Current list" + mUrl.toString());
-                for (Url.UrlInfo url: mUrl.getAllUrl()) {
+                for (Url.UrlInfo url: localList) {
+                    //Check if boolean is true
+                        //if yes, delete from server then delete from local
                     Log.d(TAG, "Url Saved:" + url.toString());
                 }
-                mListView.setAdapter(new mAdapter(activity, R.layout.list_item, mUrl.getAllUrl())); //chage last parameter
+
+                int timelimit = localList.get(localList.size() - 1 ).getModDate();
+
+                for(Url.UrlInfo url: remoteList) {
+                    if(url.getModDate() > timelimit) {
+                        //add to local database
+                    }
+                }
+
+                //mList will represent the final list, after new database is added or deleted
+                mListView.setAdapter(new mAdapter(activity, R.layout.list_item, mList));
             }
             catch(Exception e) {
                 Log.d(TAG, "Parsing JSON Exception " + e.getMessage());
