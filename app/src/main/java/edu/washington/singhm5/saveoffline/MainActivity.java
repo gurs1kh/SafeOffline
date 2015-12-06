@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,7 +35,10 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import edu.washington.singhm5.saveoffline.Model.Url;
@@ -50,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String url = "http://cssgate.insttech.washington.edu/~singhm5/saveoffline/getUrls.php";
     private ListView mListView;
     private Url mUrl;
-//    private ArrayAdapter<Url.UrlInfo> mAdapter;
     private SwipeRefreshLayout swipeLayout;
     private static final String TAG = "MainActivity";
 
@@ -241,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
             Log.d(TAG, "running onPostExecute");
 
-            Activity activity = MainActivity.this;
+            final Activity activity = MainActivity.this;
             mUrl = new Url(activity);
             mList = new ArrayList<>();
 
@@ -261,8 +264,19 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = (JSONObject) jsonarray.get(i);
                     String title = (String) jsonObject.get("title");
                     String url = (String) jsonObject.get("url");
-                    int reg_date = (Integer) jsonObject.get("reg_date");
-                    remoteList.add(new Url.UrlInfo(title, url, reg_date));
+                    String reg_date = (String) jsonObject.get("reg_date");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+                    Date convertedDate = new Date();
+                    try {
+                        convertedDate = dateFormat.parse(reg_date);
+                    } catch (ParseException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                    int mod_date = (int) convertedDate.getTime();
+                    remoteList.add(new Url.UrlInfo(title, url, mod_date));
                 }
 
                 mListView = (ListView) findViewById(R.id.url_list);
@@ -282,7 +296,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 //mList will represent the final list, after new database is added or deleted
-                mListView.setAdapter(new mAdapter(activity, R.layout.list_item, mList));
+                mListView.setAdapter(new mAdapter(activity, R.layout.list_item, localList));
+                mListView.setClickable(true);
             }
             catch(Exception e) {
                 Log.d(TAG, "Parsing JSON Exception " + e.getMessage());
@@ -316,6 +331,35 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getContext(), "Button was clicked for list item " + pos, Toast.LENGTH_SHORT).show();
                     }
                 });
+
+                viewHolder.thumbnail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getContext(), "List Item" + pos, Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(getApplicationContext(),WebViewerActivity.class);
+
+                        String UrlTitle = getItem(pos).toString();
+                        String UrlLink = getItem(pos).toString();
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title", UrlTitle);
+                        bundle.putString("url", UrlLink);
+
+                        i.putExtras(bundle);
+
+                        startActivity(i);
+                    }
+                });
+
+                viewHolder.title.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getContext(), "List Item" + pos, Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(getApplicationContext(), WebViewerActivity.class);
+                        startActivity(i);
+                    }
+                });
+
                 convertView.setTag(viewHolder);
             }
             mViewholder = (ViewHolder) convertView.getTag();

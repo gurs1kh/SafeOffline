@@ -63,6 +63,7 @@ public class Url {
     }
 
     public List<UrlInfo> getAllUrl() {
+        ITEMS.clear();
         Cursor c = mSQLiteDatabase.query("SavedPages", null, null, null,
                                         null, null, null);
         if(c != null && c.getCount() > 0) {

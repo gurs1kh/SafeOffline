@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,10 +15,20 @@ import java.io.InputStream;
 
 public class WebViewerActivity extends AppCompatActivity {
 
+    private String UrlTitle;
+    private String UrlLink;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_web_viewer);
+        //Get the bundle
+        Bundle bundle = getIntent().getExtras();
+
+        //Extract the data…
+        UrlTitle = bundle.getString("title");
+        UrlLink = bundle.getString("url");
+
 
         final WebView webView = (WebView) findViewById(R.id.webView);
         webView.setWebViewClient(new WebViewClient() {
@@ -28,6 +39,7 @@ public class WebViewerActivity extends AppCompatActivity {
         findViewById(R.id.loadWebButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(getBaseContext(), UrlLink, Toast.LENGTH_SHORT).show();
                 webView.loadUrl("http://www.google.com");
             }
         });
