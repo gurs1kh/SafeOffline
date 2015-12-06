@@ -30,6 +30,8 @@
             android:name=".addUrlActivity"
             android:label="@string/title_activity_add_url" >
         </activity>
+        <activity android:name=".WebViewerActivity" >
+        </activity>
     </application>
 
 </manifest>
