@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -70,10 +69,12 @@ public class addUrlActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (validateAndStore()) {
+                    String title = mTitleInput.getText().toString();
+                    String downloadUrl = mUrlInput.getText().toString();
                     url += "?id=" + SaveSharedPreference.getUserId(addUrlActivity.this)
-                            + "&title=" + mTitleInput.getText().toString()
-                            + "&url=" +mUrlInput.getText().toString();
-                    new  AddUserWebTask().execute(url);
+                            + "&title=" + title
+                            + "&url=" + downloadUrl;
+                    new  AddUserWebTask().execute(url, downloadUrl, title);
                 }
             }
         });
@@ -122,10 +123,10 @@ public class addUrlActivity extends AppCompatActivity {
         private static final String TAG = "AddUserWebTask";
 
         @Override
-        protected String doInBackground(String...urls) {
+        protected String doInBackground(String...args) {
             // params comes from the execute() call: params[0] is the url.
             try {
-                return downloadUrl(urls[0]);
+                return downloadUrl(args[0], args[1], args[3]);
             } catch (IOException e) {
                 return "Unable to retrieve web page. URL may be invalid.";
             }
@@ -134,7 +135,7 @@ public class addUrlActivity extends AppCompatActivity {
         // Given a URL, establishes an HttpUrlConnection and retrieves
         // the web page content as a InputStream, which it returns as
         // a string.
-        private String downloadUrl(String myurl) throws IOException {
+        private String downloadUrl(String myurl, String downloadUrl, String title) throws IOException {
             InputStream is = null;
             // Only display the first 500 characters of the retrieved
             // web page content.
@@ -168,6 +169,11 @@ public class addUrlActivity extends AppCompatActivity {
                     is.close();
                 }
             }
+            Log.i("FILEDIR",  getFilesDir().getAbsolutePath());
+//            WebView webView = new WebView(addUrlActivity.this);
+//            webView.loadUrl(downloadUrl);
+//            webView.saveWebArchive(getFilesDir().getAbsolutePath()
+//                    + File.separator + title + ".xml");
             return null;
         }
 
@@ -187,7 +193,7 @@ public class addUrlActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(s);
                 String status = jsonObject.getString("result");
                 if (status.equalsIgnoreCase("success")) {
-                    Toast.makeText(addUrlActivity.this, "User successfully inserted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(addUrlActivity.this, "URL successfully inserted", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
                     String reason = jsonObject.getString("error");
