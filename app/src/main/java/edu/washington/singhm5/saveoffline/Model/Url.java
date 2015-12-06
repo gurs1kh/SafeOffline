@@ -52,6 +52,7 @@ public class Url {
         contentValues.put("title", title);
         contentValues.put("url", url);
         contentValues.put("modified_date", date.getTime());
+        contentValues.put("is_deleted", 0);
 
         long rowId = mSQLiteDatabase.insert("SavedPages", null, contentValues);
         return rowId != -1;
@@ -87,25 +88,25 @@ public class Url {
         private String title;
         private String url;
         private int mod_date;
-        private boolean delete;
+        private int is_deleted;
 
         public UrlInfo(String title, String url, int mod_date) {
             this.title = title;
             this.url = url;
             this.mod_date = mod_date;
-            this.delete = false;
+            this.is_deleted = 0;
         }
 
         public void softDelete() {
-            this.delete = true;
+            this.is_deleted = 1;
         }
 
         public int getModDate() {
             return this.mod_date;
         }
 
-        public boolean deleteStatus() {
-            return this.delete;
+        public int deleteStatus() {
+            return this.is_deleted;
         }
 
         @Override
