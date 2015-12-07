@@ -305,6 +305,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
+                //TODO: remove the one with boolean + 1
                 //mList will represent the final list, after new database is added or deleted
                 mListView.setAdapter(new mAdapter(activity, R.layout.list_item, localList));
                 mListView.setClickable(true);
@@ -338,6 +339,8 @@ public class MainActivity extends AppCompatActivity {
                 viewHolder.button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        //TODO: softdelete url;
+                        //TODO: delete widget;
                         Toast.makeText(getContext(), "Button was clicked for list item " + pos, Toast.LENGTH_SHORT).show();
                     }
                 });

@@ -65,7 +65,7 @@ public class Url {
     public List<UrlInfo> getAllUrl() {
         ITEMS.clear();
         Cursor c = mSQLiteDatabase.query("SavedPages", null, null, null,
-                                        null, null, null);
+                null, null, null);
         if(c != null && c.getCount() > 0) {
             c.moveToFirst();
             do {
@@ -77,6 +77,12 @@ public class Url {
             } while (c.moveToNext());
         }
         return ITEMS;
+    }
+
+    public void softDelete(String url) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("is_deleted", 1);
+        long rowId = mSQLiteDatabase.update("SavedPages", contentValues, "url = ?", new String[] {url});
     }
 
     public void deleteUrl(String url) {
@@ -100,10 +106,6 @@ public class Url {
             this.url = url;
             this.mod_date = mod_date;
             this.is_deleted = 0;
-        }
-
-        public void softDelete() {
-            this.is_deleted = 1;
         }
 
         public int getModDate() {
