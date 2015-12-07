@@ -36,20 +36,23 @@ public class Url {
     private UrlDBHelper mUrlDBHelper;
     private SQLiteDatabase mSQLiteDatabase;
 
+    /**
+     * Constructor for Url.
+     *
+     * @param context
+     */
     public Url(Context context) {
         mUrlDBHelper = new UrlDBHelper(context, DB_NAME, null, DB_VERSION);
         mSQLiteDatabase = mUrlDBHelper.getWritableDatabase();
     }
 
-    public List<UrlInfo> getUrls() {
-        return ITEMS;
-    }
-
-    public static void addItem(UrlInfo item) {
-        ITEMS.add(item);
-        ITEM_MAP.put(item.title, item);
-    }
-
+    /**
+     * Insert a URL to the local database
+     *
+     * @param title title for the url
+     * @param url the url for the page
+     * @return the success information
+     */
     public boolean insertUrl(String title, String url) {
         ContentValues contentValues = new ContentValues();
         Date date = new Date();
@@ -62,6 +65,11 @@ public class Url {
         return rowId != -1;
     }
 
+    /**
+     * retreive all of the Url that has been stored in the lcoal database.
+     *
+     * @return List of the url store locally.
+     */
     public List<UrlInfo> getAllUrl() {
         ITEMS.clear();
         Cursor c = mSQLiteDatabase.query("SavedPages", null, null, null,
@@ -80,6 +88,12 @@ public class Url {
         return ITEMS;
     }
 
+    /**
+     * Change the status of the URL to be deleted before it is removed from the database.
+     *
+     * @param url the URL to be updated
+     * @return the success condition of update
+     */
     public boolean softDelete(String url) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("is_deleted", 1);
@@ -87,6 +101,11 @@ public class Url {
         return rowId != -1;
     }
 
+    /**
+     * completely remove the url from the local database.
+     *
+     * @param url the url to be deleted
+     */
     public void deleteUrl(String url) {
         mSQLiteDatabase.delete("SavedPages", "url = ?", new String[] {url});
     }
@@ -103,6 +122,14 @@ public class Url {
         private int mod_date;
         private int is_deleted;
 
+        /**
+         * Constructor for the UrlInfo
+         *
+         * @param title the title of the url
+         * @param url the url
+         * @param mod_date when it is created
+         * @param delStat the deletion status of url
+         */
         public UrlInfo(String title, String url, int mod_date, int delStat) {
             this.title = title;
             this.url = url;
@@ -110,14 +137,33 @@ public class Url {
             this.is_deleted = delStat;
         }
 
+        /**
+         * retreive the modified date of the url
+         * @return the modified date of url
+         */
         public int getModDate() {
             return this.mod_date;
         }
 
+        /**
+         * retreive the title of the url
+         *
+         * @return the title of the url
+         */
         public String getTitle() {return this.title; }
 
+        /**
+         * retreive the url
+         *
+         * @return the url
+         */
         public String getUrl() {return this.url; }
 
+        /**
+         * retreive the deletion status of url
+         *
+         * @return the deletion status
+         */
         public int getDeleteStatus() {
             return this.is_deleted;
         }
@@ -128,6 +174,9 @@ public class Url {
         }
     }
 
+    /**
+     * Initiates the creation of the database.
+     */
     class UrlDBHelper extends SQLiteOpenHelper {
         private static final String CREATE_URL_SQL =
                 "CREATE TABLE IF NOT EXISTS SavedPages(" +

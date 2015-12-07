@@ -45,8 +45,13 @@ import java.util.List;
 
 import edu.washington.singhm5.saveoffline.Model.Url;
 
-/*
-* resource: https://github.com/jonndavis1993/Android-Tutorials/blob/master/app/src/main/java/com/simpleware/jonathan/listviewexample/MainActivity.java
+/***
+ * The main page of the application, will show a list of urls that has been saved previously.
+ * If internet connection is present, application will try to sycnronize with an online database
+ * to ensure data validity. Otherwise data will be loacded locally.
+ *
+ * @version : Fall 2015
+ * @author : Manvir, Nabil
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -61,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     @Override
+    /***
+     * Create the initial page for the application. User will be able
+     * to swipe down to perform a refresh to syncronize their data online
+     * and locally.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -77,6 +87,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * Creates a menu to allow user to sign in/out of the application
+     *
+     * @param menu Menu item to be displayed
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_main, menu);
@@ -86,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * Continue the process.
+     */
     protected void onResume() {
         super.onResume();
         if (signInOutMI != null) {
@@ -94,6 +112,12 @@ public class MainActivity extends AppCompatActivity {
         updateUrlList();
     }
 
+    /**
+     * Updates the URL that will be show in the main page. If network
+     * connection is not available, URL will be update locally. If network
+     * connection is present, URL will be matched with the database to ensure
+     * user has all the URL saved.
+     */
     private void updateUrlList() {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -116,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Update the user menu to whether or not they are signed in or out.
+     */
     private void updateSignInOut() {
         if(SaveSharedPreference.getUserName(this).equals("")) {
             signInOutMI.setTitle(getString(R.string.action_sign_in_short));
@@ -125,6 +152,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * Switched the menu to indicate that user has been signed out.
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -146,15 +176,29 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * load the activity to add new URL.
+     *
+     * @param view view for the activity.
+     */
     public void addUrlActivity(View view) {
         startActivity(new Intent(MainActivity.this, addUrlActivity.class));
     }
 
+    /**
+     * Connect to the network to sycnronize the list of URL that has been downloaded by the user.
+     *
+     */
     private class UserWebTask extends AsyncTask<String, Void, String> {
 
         private static final String TAG = "UserWebTask";
 
         @Override
+        /**
+         * Run method to download URLS to display
+         *
+         * @param urls url needed to syncrozie
+         */
         protected String doInBackground(String...urls) {
             // params comes from the execute() call: params[0] is the url.
             try {
@@ -164,9 +208,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Given a URL, establishes an HttpUrlConnection and retrieves
-        // the web page content as a InputStream, which it returns as
-        // a string.
+        /**
+         * Given a URL, establishes an HttpUrlConnection and retrieves
+         * the web page content as a InputStream, which it returns as
+         * a string.
+         *
+         * @param myurl the url used to download links
+         */
         private String downloadUrl(String myurl) throws IOException {
             InputStream is = null;
             // Only display the first 500 characters of the retrieved
@@ -204,6 +252,14 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
+        /**
+         * Given a URL, establishes an HttpUrlConnection and deletes
+         * the web page content as a InputStream, which it returns as
+         * a string.
+         *
+         * @param myurl the url used to download links.
+         * @param deleteUrl the url to be deleted.
+         */
         private void deleteUrl(String myurl, String deleteUrl) throws IOException {
             InputStream is = null;
             // Only display the first 500 characters of the retrieved
@@ -240,7 +296,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Reads an InputStream and converts it to a String.
+        /**
+         *  Reads an InputStream and converts it to a String.
+          */
         public String readIt(InputStream stream, int len) throws IOException {
             Reader reader;
             reader = new InputStreamReader(stream, "UTF-8");
@@ -250,6 +308,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        /**
+         * perform once connection has been established. will compare the list of
+         * urls locally and remote, then perform add and delete respectively.
+         */
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
@@ -319,6 +381,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * a custom class to create a stylize list item
+     */
     private class mAdapter extends ArrayAdapter<Url.UrlInfo> {
         private int layout;
         private List<Url.UrlInfo> mObj;
