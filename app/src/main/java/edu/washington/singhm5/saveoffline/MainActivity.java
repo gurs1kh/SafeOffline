@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
                 convertView.setTag(viewHolder);
             }
             mViewholder = (ViewHolder) convertView.getTag();
-            mViewholder.title.setText(getItem(pos).toString());
+            mViewholder.title.setText(getItem(pos).getTitle());
             return convertView;
         }
     }
