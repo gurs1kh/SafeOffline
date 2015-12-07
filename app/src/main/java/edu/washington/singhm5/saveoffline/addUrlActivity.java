@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.TypefaceProvider;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -64,6 +66,7 @@ public class addUrlActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_url);
+        TypefaceProvider.registerDefaultIconSets();
 
         mTitleInput = (EditText) findViewById(R.id.title_input);
         mUrlInput = (EditText) findViewById(R.id.url_input);

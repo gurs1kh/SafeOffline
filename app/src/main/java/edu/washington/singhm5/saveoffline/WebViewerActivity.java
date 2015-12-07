@@ -4,21 +4,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class WebViewerActivity extends AppCompatActivity {
 
-    private String UrlTitle;
     private String UrlLink;
 
     @Override
@@ -28,8 +19,6 @@ public class WebViewerActivity extends AppCompatActivity {
         //Get the bundle
         Bundle bundle = getIntent().getExtras();
 
-        //Extract the data…
-        UrlTitle = bundle.getString("title");
         UrlLink = bundle.getString("url");
 
 

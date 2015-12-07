@@ -25,6 +25,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.TypefaceProvider;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TypefaceProvider.registerDefaultIconSets();
 
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

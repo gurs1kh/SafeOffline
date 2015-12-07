@@ -31,6 +31,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.TypefaceProvider;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,6 +76,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        TypefaceProvider.registerDefaultIconSets();
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -388,8 +391,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         // Reads an InputStream and converts it to a String.
-        public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-            Reader reader = null;
+        public String readIt(InputStream stream, int len) throws IOException {
+            Reader reader;
             reader = new InputStreamReader(stream, "UTF-8");
             char[] buffer = new char[len];
             reader.read(buffer);
@@ -400,7 +403,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final String json) {
             mAuthTask = null;
             showProgress(false);
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             try {
                 jsonObject = new JSONObject(json);
                 if (jsonObject.getString("result").equalsIgnoreCase("success")) {
