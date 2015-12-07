@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         updateUrlList();
     }
 
-    //TODO: add delete button to url. Change to Load from local DB instead
     private void updateUrlList() {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -280,11 +279,11 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     int mod_date = (int) convertedDate.getTime();
-                    remoteList.add(new Url.UrlInfo(title, url, mod_date));
+                    remoteList.add(new Url.UrlInfo(title, url, mod_date, 0));
                 }
 
                 mListView = (ListView) findViewById(R.id.url_list);
-                Log.d(TAG, "Current list" + mUrl.toString());
+
                 for (Url.UrlInfo url: localList) {
                     //Check if boolean is true
                     if(url.getDeleteStatus() == 1) {
@@ -301,9 +300,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                //TODO: remove the one with boolean + 1
+                for(Url.UrlInfo url: localList) {
+                    if(url.getDeleteStatus() == 0) {
+                        mList.add(url);
+                    }
+                }
                 //mList will represent the final list, after new database is added or deleted
-                mListView.setAdapter(new mAdapter(activity, R.layout.list_item, localList));
+                mListView.setAdapter(new mAdapter(activity, R.layout.list_item, mList));
                 mListView.setClickable(true);
             }
             catch(Exception e) {
@@ -335,9 +338,10 @@ public class MainActivity extends AppCompatActivity {
                 viewHolder.button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //TODO: softdelete url;
+                        String sUrl = getItem(pos).getUrl();
+                        mUrl.softDelete(sUrl);
                         //TODO: delete widget;
-                        Toast.makeText(getContext(), "Button was clicked for list item " + pos, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "URL will be deleted on refresh" , Toast.LENGTH_SHORT).show();
                     }
                 });
 

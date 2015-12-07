@@ -72,17 +72,19 @@ public class Url {
                 //Push URL to array
                 UrlInfo temp = new UrlInfo(c.getString(c.getColumnIndex("title")),
                                             c.getString(c.getColumnIndex("url")),
-                                            c.getInt(c.getColumnIndex("modified_date")));
+                                            c.getInt(c.getColumnIndex("modified_date")),
+                                            c.getInt(c.getColumnIndex("is_deleted")));
                 ITEMS.add(temp);
             } while (c.moveToNext());
         }
         return ITEMS;
     }
 
-    public void softDelete(String url) {
+    public boolean softDelete(String url) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("is_deleted", 1);
         long rowId = mSQLiteDatabase.update("SavedPages", contentValues, "url = ?", new String[] {url});
+        return rowId != -1;
     }
 
     public void deleteUrl(String url) {
@@ -101,11 +103,11 @@ public class Url {
         private int mod_date;
         private int is_deleted;
 
-        public UrlInfo(String title, String url, int mod_date) {
+        public UrlInfo(String title, String url, int mod_date, int delStat) {
             this.title = title;
             this.url = url;
             this.mod_date = mod_date;
-            this.is_deleted = 0;
+            this.is_deleted = delStat;
         }
 
         public int getModDate() {
@@ -122,7 +124,7 @@ public class Url {
 
         @Override
         public String toString() {
-            return title + ": " + url;
+            return title + ": " + url + " :" + is_deleted;
         }
     }
 
