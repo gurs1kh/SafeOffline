@@ -102,7 +102,17 @@ public class MainActivity extends AppCompatActivity {
         if (networkInfo != null && networkInfo.isConnected()) {
             new UserWebTask().execute(url);
         } else {
-            //TODO: load local stuff here
+            mUrl = new Url(this);
+
+            List<Url.UrlInfo> localList;
+            localList = mUrl.getAllUrl();
+
+
+            mListView = (ListView) findViewById(R.id.url_list);
+            //mList will represent the final list, after new database is added or deleted
+            mListView.setAdapter(new mAdapter(this, R.layout.list_item, localList));
+            mListView.setClickable(true);
+
             Toast.makeText(this, "No network connection available.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -338,8 +348,8 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getContext(), "List Item" + pos, Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(getApplicationContext(),WebViewerActivity.class);
 
-                        String UrlTitle = getItem(pos).toString();
-                        String UrlLink = getItem(pos).toString();
+                        String UrlTitle = getItem(pos).getTitle();
+                        String UrlLink = getItem(pos).getUrl();
 
                         Bundle bundle = new Bundle();
                         bundle.putString("title", UrlTitle);
