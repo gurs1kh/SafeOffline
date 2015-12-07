@@ -31,16 +31,12 @@
         android:layout_alignEnd="@id/title_input"
         android:hint="URL" />
 
-    <com.beardedhen.androidbootstrap.BootstrapButton
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save Page"
         android:id="@+id/add_button"
         android:layout_below="@+id/url_input"
         android:layout_centerHorizontal="true"
-        app:bootstrapBrand="success"
-        app:bootstrapSize="lg"
-        app:buttonMode="regular"
-        app:showOutline="false"
-        app:roundedCorners="true"/>
+        />
 </RelativeLayout>
