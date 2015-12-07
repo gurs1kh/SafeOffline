@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
     MenuItem signInOutMI;
 
     private List<Url.UrlInfo> mList;
-    private static final String url = "http://cssgate.insttech.washington.edu/~singhm5/saveoffline/getUrls.php";
+    private static final String getUrl = "http://cssgate.insttech.washington.edu/~singhm5/saveoffline/getUrls.php";
+    private static final String delUrl = "http://cssgate.insttech.washington.edu/~singhm5/saveoffline/delUrls.php";
     private ListView mListView;
     private Url mUrl;
     private SwipeRefreshLayout swipeLayout;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            new UserWebTask().execute(url);
+            new UserWebTask().execute(getUrl);
         } else {
             mUrl = new Url(this);
 
@@ -200,15 +201,15 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-        //TODO: delete urls from database.
-        private void deleteUrl(String myurl) throws IOException {
+        private void deleteUrl(String myurl, String deleteUrl) throws IOException {
             InputStream is = null;
             // Only display the first 500 characters of the retrieved
             // web page content.
             int len = 500;
 
             try {
-                URL url = new URL(myurl + "?id=" + SaveSharedPreference.getUserId(MainActivity.this));
+                URL url = new URL(myurl + "?id=" + SaveSharedPreference.getUserId(MainActivity.this)
+                                + "&url=" + deleteUrl);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setReadTimeout(10000 /* milliseconds */);
                 conn.setConnectTimeout(15000 /* milliseconds */);
@@ -237,8 +238,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Reads an InputStream and converts it to a String.
-        public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-            Reader reader = null;
+        public String readIt(InputStream stream, int len) throws IOException {
+            Reader reader;
             reader = new InputStreamReader(stream, "UTF-8");
             char[] buffer = new char[len];
             reader.read(buffer);
@@ -248,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Log.d(TAG, "running onPostExecute");
 
             final Activity activity = MainActivity.this;
             mUrl = new Url(activity);
@@ -287,7 +287,8 @@ public class MainActivity extends AppCompatActivity {
                 for (Url.UrlInfo url: localList) {
                     //Check if boolean is true
                     if(url.getDeleteStatus() == 1) {
-                        //TODO: DELETE comparison
+                        deleteUrl(delUrl, url.getUrl()); //hard delete from server
+                        mUrl.deleteUrl(url.getUrl()); //delete from local
                     }
                     Log.d(TAG, "Url Saved:" + url.toString());
                 }
@@ -327,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public View getView(final int pos, View convertView, ViewGroup parent) {
-            ViewHolder mViewholder = null;
+            ViewHolder mViewholder;
             if(convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getContext());
                 convertView = inflater.inflate(layout, parent, false);
@@ -340,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         String sUrl = getItem(pos).getUrl();
                         mUrl.softDelete(sUrl);
-                        //TODO: delete widget;
+                        updateUrlList();
                         Toast.makeText(getContext(), "URL will be deleted on refresh" , Toast.LENGTH_SHORT).show();
                     }
                 });
