@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         if (networkInfo != null && networkInfo.isConnected()) {
             new UserWebTask().execute(url);
         } else {
+            //TODO: load local stuff here
             Toast.makeText(this, "No network connection available.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -257,8 +258,6 @@ public class MainActivity extends AppCompatActivity {
                 localList = mUrl.getAllUrl();
 
                 JSONArray jsonarray = new JSONArray(s);
-//                Log.d(TAG, "Json string:" + jsonarray.toString());
-                //TODO: DELETE comparison
 
                 for (int i=0; i<jsonarray.length(); i++) {
                     JSONObject jsonObject = (JSONObject) jsonarray.get(i);
@@ -271,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         convertedDate = dateFormat.parse(reg_date);
                     } catch (ParseException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
 
@@ -283,7 +281,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "Current list" + mUrl.toString());
                 for (Url.UrlInfo url: localList) {
                     //Check if boolean is true
-                        //if yes, delete from server then delete from local
+                    if(url.getDeleteStatus() == 1) {
+                        //TODO: DELETE comparison
+                    }
                     Log.d(TAG, "Url Saved:" + url.toString());
                 }
 
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
 
                 for(Url.UrlInfo url: remoteList) {
                     if(url.getModDate() > timelimit) {
-                        //add to local database
+                        mUrl.insertUrl(url.getTitle(), url.getUrl());
                     }
                 }
 
