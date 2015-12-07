@@ -2,6 +2,7 @@ package edu.washington.singhm5.saveoffline;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -76,10 +77,21 @@ public class addUrlActivity extends AppCompatActivity {
                     url += "?id=" + SaveSharedPreference.getUserId(addUrlActivity.this)
                             + "&title=" + title
                             + "&url=" + downloadUrl;
-                    new  AddUserWebTask().execute(url, downloadUrl, title);
+                    new  AddUserWebTask().execute(url);
+                    Intent intent = new Intent(addUrlActivity.this, WebViewerActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", title);
+                    bundle.putString("url", downloadUrl);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        finish();
     }
 
     private boolean validateAndStore() {
@@ -129,7 +141,7 @@ public class addUrlActivity extends AppCompatActivity {
         protected String doInBackground(String...args) {
             // params comes from the execute() call: params[0] is the url.
             try {
-                return downloadUrl(args[0], args[1], args[3]);
+                return downloadUrl(args[0]);
             } catch (IOException e) {
                 return "Unable to retrieve web page. URL may be invalid.";
             }
@@ -138,7 +150,7 @@ public class addUrlActivity extends AppCompatActivity {
         // Given a URL, establishes an HttpUrlConnection and retrieves
         // the web page content as a InputStream, which it returns as
         // a string.
-        private String downloadUrl(String myurl, String downloadUrl, String title) throws IOException {
+        private String downloadUrl(String myurl) throws IOException {
             InputStream is = null;
             // Only display the first 500 characters of the retrieved
             // web page content.
@@ -172,11 +184,6 @@ public class addUrlActivity extends AppCompatActivity {
                     is.close();
                 }
             }
-            Log.i("FILEDIR",  getFilesDir().getAbsolutePath());
-//            WebView webView = new WebView(addUrlActivity.this);
-//            webView.loadUrl(downloadUrl);
-//            webView.saveWebArchive(getFilesDir().getAbsolutePath()
-//                    + File.separator + title + ".xml");
             return null;
         }
 
