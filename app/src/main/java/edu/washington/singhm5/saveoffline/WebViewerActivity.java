@@ -48,10 +48,6 @@ public class WebViewerActivity extends AppCompatActivity {
         findViewById(R.id.loadWebButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ( !isNetworkAvailable() ) { // loading offline
-                    webView.getSettings().setCacheMode( WebSettings.LOAD_CACHE_ELSE_NETWORK );
-                }
-                webView.loadUrl(UrlLink);
                 Toast.makeText(getBaseContext(), UrlLink, Toast.LENGTH_SHORT).show();
                 webView.loadUrl("http://www.google.com");
             }
@@ -93,12 +89,6 @@ public class WebViewerActivity extends AppCompatActivity {
 
     void continueWhenLoaded(WebView webView) {
         webView.setWebViewClient(new MyWebClient());
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private class MyWebClient extends WebViewClient {
