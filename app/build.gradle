@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'saveOfflineV2'
             keyPassword 'Password1!'
-            storeFile file('C:/Users/Nabil/saveofflineV2.jks')
+            storeFile file('C:/Users/Manvir/saveofflineV2.jks')
             storePassword 'Password1!'
         }
     }
